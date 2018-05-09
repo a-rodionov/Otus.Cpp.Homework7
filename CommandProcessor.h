@@ -31,6 +31,6 @@ public:
 
 private:
 
-  std::size_t open_brace_count{};
+  std::size_t open_brace_count{0};
 
 };
