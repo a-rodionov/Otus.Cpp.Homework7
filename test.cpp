@@ -18,12 +18,12 @@ struct initialized_command_processor
     storage = std::make_shared<Storage>(3);
     consoleOutput = std::make_shared<ConsoleOutput>(oss);
 
-    std::dynamic_pointer_cast<Storage>(storage)->Subscribe(consoleOutput);
+    storage->Subscribe(consoleOutput);
     commandProcessor->Subscribe(storage);
   }
 
   std::unique_ptr<CommandProcessor> commandProcessor;
-  std::shared_ptr<IStorage> storage;
+  std::shared_ptr<Storage> storage;
   std::shared_ptr<IOutput> consoleOutput;
   std::ostringstream oss;
 };

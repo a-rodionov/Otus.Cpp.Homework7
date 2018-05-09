@@ -12,12 +12,12 @@ int main(int argc, char const* argv[])
 
     std::string block_size{argv[1]};
     auto commandProcessor = std::make_unique<CommandProcessor>();
-    std::shared_ptr<IStorage> storage = std::make_shared<Storage>(std::stoull(block_size));
+    std::shared_ptr<Storage> storage = std::make_shared<Storage>(std::stoull(block_size));
     std::shared_ptr<IOutput> consoleOutput = std::make_shared<ConsoleOutput>(std::cout);
     std::shared_ptr<IOutput> fileOutput = std::make_shared<FileOutput>();
 
-    std::dynamic_pointer_cast<Storage>(storage)->Subscribe(consoleOutput);
-    std::dynamic_pointer_cast<Storage>(storage)->Subscribe(fileOutput);
+    storage->Subscribe(consoleOutput);
+    storage->Subscribe(fileOutput);
     commandProcessor->Subscribe(storage);
 
     commandProcessor->Process(std::cin);
