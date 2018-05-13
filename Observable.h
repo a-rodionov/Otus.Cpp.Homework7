@@ -14,7 +14,7 @@ public:
       subscribers.push_back(subscriber);
   }
 
-  void Unsubscribe(const std::shared_ptr<IOutput>& subscriber) {
+  void Unsubscribe(const std::shared_ptr<T>& subscriber) {
     auto subscr = Find(subscriber);
     if(std::cend(subscribers) != subscr)
       subscribers.erase(subscr);

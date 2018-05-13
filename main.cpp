@@ -27,11 +27,10 @@ int main(int argc, char const* argv[])
     }
     catch(...)
     {
-      std::ostringstream error_msg;
-      error_msg << "The programm must be started with only one parameter. It must be a digit from 1 to "
-                << std::numeric_limits<decltype(block_size)>::max()
-                << " in decimal base.";
-      throw std::invalid_argument(error_msg.str());
+      std::string error_msg = "The programm must be started with only one parameter. It must be a digit from 1 to "
+                              + std::to_string(std::numeric_limits<decltype(block_size)>::max())
+                              + " in decimal base.";
+      throw std::invalid_argument(error_msg);
     }
 
     auto commandProcessor = std::make_unique<CommandProcessor>();

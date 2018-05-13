@@ -11,8 +11,12 @@ protected:
   void Output(const std::size_t timestamp, const std::list<std::string>& data) {
     for (const auto& subscriber : subscribers) {
       auto subscriber_locked = subscriber.lock();
-      if(subscriber_locked)
-        subscriber_locked->Output(timestamp, data);
+      if(subscriber_locked) {
+        try {
+          subscriber_locked->Output(timestamp, data);
+        }
+        catch(...) {}
+      }
     }
   }
 

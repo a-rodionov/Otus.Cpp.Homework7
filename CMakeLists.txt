@@ -41,4 +41,5 @@ include (CPack)
 
 enable_testing()
 
+add_test(test_suite_internals bulk_test)
 add_test(fixture_test_suite_bulk bulk_test)
