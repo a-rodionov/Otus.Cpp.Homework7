@@ -17,8 +17,8 @@ public:
         }
         if('}' == command.front()) {
           if(0 == open_brace_count)
-            throw std::invalid_argument("Symbol } is used without preceding symbol {.");
-          if(0 == --open_brace_count)
+            BlockEnd();
+          else if(0 == --open_brace_count)
             BlockEnd();
           continue;
         }
