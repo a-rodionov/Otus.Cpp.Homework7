@@ -10,12 +10,12 @@ public:
   void Process(std::istream& in) {
     for(std::string command; std::getline(in, command);) {
       if(!command.empty()) {
-        if('{' == command.front()) {
+        if("{" == command) {
           if(0 == open_brace_count++)
             BlockStart();
           continue;
         }
-        if('}' == command.front()) {
+        if("}" == command) {
           if(0 == open_brace_count)
             BlockEnd();
           else if(0 == --open_brace_count)
