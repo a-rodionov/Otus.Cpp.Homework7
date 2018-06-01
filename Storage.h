@@ -19,8 +19,9 @@ public:
     }
     data.push_back(new_data);
     if(!is_dynamic_size
-      && (block_size == data.size()))
+      && (block_size == data.size())) {
       Flush();
+    }
   }
 
   void Flush() override {
