@@ -10,22 +10,15 @@ project(bulk VERSION 1.0.${PATCH_VERSION})
 
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 # Создание целей
 add_executable(bulk main.cpp)
 
-add_executable(bulk_test test.cpp)
-
-# Настройка целей
-
-# для всех целей
+# Настройки для всех целей
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_compile_options(-Wpedantic -Wall -Wextra)
-
-target_compile_definitions(bulk_test PRIVATE BOOST_TEST_DYN_LINK)
-target_link_libraries(bulk_test 
-  Boost::unit_test_framework
-)
 
 install(TARGETS bulk RUNTIME DESTINATION bin)
 
@@ -41,5 +34,4 @@ include (CPack)
 
 enable_testing()
 
-add_test(test_suite_internals bulk_test)
-add_test(fixture_test_suite_bulk bulk_test)
+add_subdirectory(tests)
