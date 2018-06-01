@@ -5,15 +5,14 @@
 
 class ConsoleOutput : public IOutput
 {
-  using IOutput::Output;
 
 public:
 
   explicit ConsoleOutput(std::ostream& out)
     : out{out} {}
 
-  void Output(const std::size_t timestamp, const std::list<std::string>& data) override {
-    Output(out, data);
+  void Output(const std::size_t, const std::list<std::string>& data) override {
+    OutputFormattedBulk(out, data);
   }
 
 private:

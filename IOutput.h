@@ -15,7 +15,7 @@ public:
 
 protected:
 
-  void Output(std::ostream& out, const std::list<std::string>& data) {
+  void OutputFormattedBulk(std::ostream& out, const std::list<std::string>& data) {
     out << "bulk: ";
     std::copy(std::cbegin(data),
               std::cend(data),

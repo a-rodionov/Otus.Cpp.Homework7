@@ -10,7 +10,6 @@ std::string MakeFilename(std::size_t timestamp) {
 
 class FileOutput : public IOutput
 {
-  using IOutput::Output;
 
 public:
 
@@ -19,7 +18,7 @@ public:
     std::ofstream ofs{filename.c_str(), std::ofstream::out | std::ofstream::trunc};
     if(ofs.fail())
       throw std::runtime_error("FileOutput::Output. Can't open file for output.");
-    Output(ofs, data);
+    OutputFormattedBulk(ofs, data);
     auto is_failed = ofs.fail();
     ofs.close();
     if(is_failed)
