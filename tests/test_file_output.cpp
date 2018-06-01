@@ -1,5 +1,7 @@
 #include <sys/file.h>
 #include <sstream>
+#include <deque>
+#include <algorithm>
 #include "Storage.h"
 #include "FileOutput.h"
 #include "CommandProcessor.h"
@@ -16,25 +18,35 @@ class TestFileOutput : public FileOutput {
 
 public:
 
-  std::string GetLastFileName() const {
-    return lastFileName;
+  auto GetLastFileName() const {
+    return fileNames;
   }
 
 private:
 
   void PostOutputAction(const std::string& filename) const override {
-    lastFileName = filename;
+    fileNames.push_back(filename);
   }
 
-  mutable std::string lastFileName;
+  mutable std::deque<std::string> fileNames;
 };
 
-BOOST_AUTO_TEST_CASE(simple_file_output)
+BOOST_AUTO_TEST_CASE(write_multiple_files)
 {
-  std::string result;
-  std::string goodResult{"bulk: cmd100, cmd200, cmd300"};
-  std::string testData{"cmd100\ncmd200\ncmd300\n"};
+  std::string testData{"cmd1\n"
+                      "cmd2\n"
+                      "cmd3\n"
+                      "cmd4\n"
+                      "cmd5\n"
+                      "cmd6\n"
+                      "cmd7\n"
+                      "cmd8\n"};
+  std::array<std::string, 3> results = {
+    "bulk: cmd1, cmd2, cmd3",
+    "bulk: cmd4, cmd5, cmd6",
+    "bulk: cmd7, cmd8"};
   std::istringstream iss(testData);
+  std::string result_from_file;
 
   auto commandProcessor = std::make_unique<CommandProcessor>();
   auto storage = std::make_shared<Storage>(3);
@@ -45,19 +57,29 @@ BOOST_AUTO_TEST_CASE(simple_file_output)
 
   commandProcessor->Process(iss);
 
-  auto filename = fileOutput->GetLastFileName();
-  std::ifstream ifs{filename.c_str(), std::ifstream::in};
-  BOOST_CHECK_EQUAL(false, ifs.fail());
+  auto filenames = fileOutput->GetLastFileName();
+  BOOST_REQUIRE_EQUAL(results.size(), filenames.size());
 
-  std::getline(ifs, result);
-  BOOST_CHECK_EQUAL(goodResult, result);
+  std::sort(std::begin(filenames), std::end(filenames));
+  BOOST_REQUIRE(std::cend(filenames) == std::adjacent_find(std::cbegin(filenames), std::cend(filenames)));
 
-  std::getline(ifs, result);
-  BOOST_CHECK_EQUAL(true, ifs.eof());
-  goodResult.clear();
-  BOOST_CHECK_EQUAL(goodResult, result);
+  auto result = std::cbegin(results);
+  for(const auto& filename : filenames) {
+    std::ifstream ifs{filename.c_str(), std::ifstream::in};
+    BOOST_REQUIRE_EQUAL(false, ifs.fail());
 
-  std::remove(filename.c_str());
+    std::getline(ifs, result_from_file);
+    BOOST_REQUIRE_EQUAL(*result, result_from_file);
+
+    std::getline(ifs, result_from_file);
+    BOOST_REQUIRE_EQUAL(true, ifs.eof());
+    BOOST_REQUIRE_EQUAL(true, result_from_file.empty());
+
+    std::remove(filename.c_str());
+    ++result;
+  }
+
+
 }
 
 BOOST_AUTO_TEST_CASE(file_output_to_locked_file)
